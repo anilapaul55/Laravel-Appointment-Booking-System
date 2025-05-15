@@ -43,9 +43,10 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::resource('appointments', AppoinmentController::class);
     // fetch doctor availability days
     Route::get('doctor-availability/{doctorId}', [AppoinmentController::class, 'getDoctorAvailability']);
-    // fetch available time slots for the selected date
+    // fetch available time slots for the selected date  
     Route::get('available-slots/{doctorId}/{date}', [AppoinmentController::class, 'getAvailableSlots']);
     Route::get('/booked-appointments', [AppoinmentController::class, 'showBookedAppointments'])->name('appointments.booked');
+    Route::post('/cancel-appointments/{id}/{docId}', [AppoinmentController::class, 'cancelAppointments'])->name('appointment.cancel');
 
 
     Route::get('/user/connections', [ConnectionController::class, 'index'])->name('user.connection');

@@ -55,27 +55,66 @@
 </div>
 <script>
     let index = {{ count($availabilities) }};
-    document.getElementById('add-slot').addEventListener('click', function() {
+    document.getElementById('add-slot').addEventListener('click', function () {
         const section = document.getElementById('availability-section');
         const html = `
             <div class="row mb-2 availability-row">
                 <div class="col">
-                    <select name="availability[\${index}][day]" class="form-control" required>
+                    <select name="availability[${index}][day]" class="form-control" required>
                         <option value="">Select Day</option>
-                        @foreach(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] as $day)
-                            <option value="{{ $day }}">{{ $day }}</option>
-                        @endforeach
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
                     </select>
                 </div>
                 <div class="col">
-                    <input type="time" name="availability[\${index}][start_time]" class="form-control" required>
+                    <input type="time" name="availability[${index}][start_time]" class="form-control" required>
                 </div>
                 <div class="col">
-                    <input type="time" name="availability[\${index}][end_time]" class="form-control" required>
+                    <input type="time" name="availability[${index}][end_time]" class="form-control" required>
                 </div>
             </div>`;
         section.insertAdjacentHTML('beforeend', html);
         index++;
     });
+</script>
+<script>
+document.querySelector('form').addEventListener('submit', function (e) {
+    const rows = document.querySelectorAll('.availability-row');
+    for (let row of rows) {
+        const start = row.querySelector('input[name*="[start_time]"]').value;
+        const end = row.querySelector('input[name*="[end_time]"]').value;
+
+        if (start && end && end <= start) {
+            e.preventDefault();
+            alert('End time must be greater than start time.');
+            return false;
+        }
+    }
+});
+</script>
+<script>
+document.addEventListener('input', function (e) {
+    if (e.target && e.target.name.includes('[end_time]')) {
+        const row = e.target.closest('.availability-row');
+        const startInput = row.querySelector('input[name*="[start_time]"]');
+        const endInput = e.target;
+
+        const start = startInput.value;
+        const end = endInput.value;
+
+        if (start && end) {
+            if (end <= start) {
+                endInput.setCustomValidity('End time must be greater than start time');
+            } else {
+                endInput.setCustomValidity('');
+            }
+        }
+    }
+});
 </script>
 @endsection
