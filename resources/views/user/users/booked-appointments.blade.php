@@ -24,6 +24,7 @@
                     <th>User</th>
                     <th>Date</th>
                     <th>Time</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,6 +35,12 @@
                     <td>{{ $appointment->user->name ?? 'N/A' }}</td>
                     <td>{{ $appointment->date }}</td>
                     <td>{{ $appointment->time }}</td>
+                    <td>
+                        <form action="{{ route('appointment.cancel', ['id' =>$appointment->id, 'docId' =>$appointment->doctor->id]) }}" method="POST">
+                            @csrf
+                            <button type="submit">cancel</button>
+                        </form>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>

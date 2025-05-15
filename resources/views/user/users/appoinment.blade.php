@@ -98,12 +98,11 @@ doctorSelect.addEventListener('change', function () {
         });
 });
 
-// On date change, show available slots
 dateSelect.addEventListener('change', function () {
     let doctorId = doctorSelect.value;
     let date = this.value;
     document.getElementById('date').value = date;
-    // alert(date);
+
     fetch(`available-slots/${doctorId}/${date}`)
         .then(res => res.json())
         .then(slots => {
@@ -112,9 +111,15 @@ dateSelect.addEventListener('change', function () {
                 slotsContainer.innerHTML = '<p>No available slots.</p>';
             } else {
                 slots.forEach(slot => {
+                    const disabled = slot.status !== 'available' ? 'disabled' : '';
+                    const labelClass = slot.status === 'booked' ? 'text-danger' :
+                                    slot.status === 'past' ? 'text-secondary' : 'text-success';
+
                     const input = `<div class="form-check">
-                        <input type="radio" class="form-check-input" name="time" value="${slot}" required>
-                        <label class="form-check-label">${slot}</label>
+                        <input type="radio" class="form-check-input" name="time" value="${slot.start}" ${disabled} required>
+                        <label class="form-check-label ${labelClass}">
+                            ${slot.start} - ${slot.end} ${slot.status !== 'available' ? '(' + slot.status + ')' : ''}
+                        </label>
                     </div>`;
                     slotsContainer.insertAdjacentHTML('beforeend', input);
                 });
@@ -122,5 +127,6 @@ dateSelect.addEventListener('change', function () {
             slotsSection.style.display = 'block';
         });
 });
+
 </script>
 @endsection

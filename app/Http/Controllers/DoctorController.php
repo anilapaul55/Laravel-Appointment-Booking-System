@@ -32,7 +32,12 @@ class DoctorController extends Controller
         $doctor = Doctor::create($request->only('name', 'specialization'));
 
         foreach ($request->availability as $slot) {
-            $doctor->availabilities()->create($slot);
+            $slots = new Availability();
+            $slots->doctor_id = $doctor->id;
+            $slots->day = $slot['day'];
+            $slots->start_time = $slot['start_time'];
+            $slots->end_time = $slot['end_time'];
+            $slots->save();
         }
 
         return redirect()->route('doctors.index')->with('success', 'Doctor registered successfully.');
